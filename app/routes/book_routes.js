@@ -31,12 +31,6 @@ const router = express.Router()
 // GET /books
 router.get('/books', requireToken, (req, res, next) => {
 	Book.find()
-		.then((books) => {
-			// `books` will be an array of Mongoose documents
-			// we want to convert each one to a POJO, so we use `.map` to
-			// apply `.toObject` to each one
-			return books.map((book) => book.toObject())
-		})
 		// respond with status 200 and JSON of the books
 		.then((books) => res.status(200).json({ books: books }))
 		// if an error occurs, pass it to the handler
@@ -50,7 +44,7 @@ router.get('/books/:id', requireToken, (req, res, next) => {
 	Book.findById(req.params.id)
 		.then(handle404)
 		// if `findById` is succesful, respond with 200 and "book" JSON
-		.then((book) => res.status(200).json({ book: book.toObject() }))
+		.then((book) => res.status(200).json({ book: book}))
 		// if an error occurs, pass it to the handler
 		.catch(next)
 })
@@ -64,7 +58,7 @@ router.post('/books', requireToken, (req, res, next) => {
 	Book.create(req.body.book)
 		// respond to succesful `create` with status 201 and JSON of new "book"
 		.then((book) => {
-			res.status(201).json({ book: book.toObject() })
+			res.status(201).json({ book: book })
 		})
 		// if an error occurs, pass it off to our error handler
 		// the error handler needs the error message and the `res` object so that it
